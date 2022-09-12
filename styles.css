@@ -1,0 +1,12 @@
+* {
+    margin: 0px;
+    padding: 0px;
+}
+
+#main-body{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    height: 100vh;
+    align-items: center;
+    justify-items: center;
+}
