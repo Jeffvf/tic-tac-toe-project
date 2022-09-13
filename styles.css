@@ -50,4 +50,6 @@ button:active {
     border-style: solid;
     width: 200px;
     height: 200px;
+    font-size: 200px;
+    text-align: center;
 }
