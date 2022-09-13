@@ -22,7 +22,14 @@ const gameBoard = (() => {
         makeBoard(value);
     }
 
-    return {makeBoard, insertValue};
+    const resetBoard = () => {
+        for(i=0; i<9; i++){
+            boardValues[i] = '';
+        }
+        makeBoard();
+    }
+
+    return {makeBoard, insertValue, resetBoard};
 })();
 
 const Player = (name) => {
@@ -58,7 +65,7 @@ const options = document.getElementsByClassName('opt');
 
 for(let button of options){
     button.addEventListener('click', () => {
-        gameBoard.makeBoard('');
+        gameBoard.resetBoard();
         jeff.setChoice(button.textContent);
         gameBoard.makeBoard(jeff.getChoice());
     })
