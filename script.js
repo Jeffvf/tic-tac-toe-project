@@ -12,4 +12,14 @@ const gameBoard = (() => {
     return {makeBoard};
 })();
 
+const Player = (name) => {
+    let score = 0;
+
+    const getScore = () => {
+        console.log(score);
+    }
+
+    return {name, getScore};
+}
+
 gameBoard.makeBoard();
