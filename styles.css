@@ -11,6 +11,10 @@
     justify-items: center
 }
 
+#main-body > div{
+    text-align: center;
+}
+
 #game{
     display: grid;
     grid-template-rows: 4fr 1fr;

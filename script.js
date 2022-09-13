@@ -18,10 +18,21 @@ const Player = (name) => {
     let score = 0;
 
     const getScore = () => {
-        console.log(score);
+        return score;
     }
 
     return {name, getScore};
 }
 
-gameBoard.makeBoard();
+const jeff = Player('Jeff');
+
+const game = (gameBoard, player) => {
+    const body = document.getElementById('main-body');
+    let computerScore = 0;
+
+    body.childNodes[1].innerHTML = `<h1>${player.name} Score: <p>${player.getScore()}</p></h1>`;
+    body.childNodes[5].innerHTML = `<h1>Computer Score: <p>${computerScore}</p></h1>`;
+    gameBoard.makeBoard();
+}
+
+game(gameBoard, jeff);
