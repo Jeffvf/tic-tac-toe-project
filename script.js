@@ -1,27 +1,46 @@
 const gameBoard = (() => {
-    const gameBoard = document.getElementById('game-board');
+    const board = document.getElementById('game-board');
     const boardValues = new Array(9);
 
-    const makeBoard = () => {
+    const makeBoard = (currentSign) => {
+        board.innerHTML = '';
         for(let i=0; i<9; i++){
             const div = document.createElement('div');
             div.classList.add('board-square');
             div.textContent = boardValues[i];
-            gameBoard.appendChild(div);
+            div.addEventListener('click', () => insertValue(currentSign, i))
+            board.appendChild(div);
         }
     }
 
-    return {makeBoard};
+    const insertValue = (value, index) => {
+        const boardSquare = document.getElementsByClassName('board-square')[index];
+        if(!boardSquare.innerHTML){
+            boardValues[index] = value;
+        }
+
+        makeBoard(value);
+    }
+
+    return {makeBoard, insertValue};
 })();
 
 const Player = (name) => {
-    let score = 0;
+    let score = 0, choice = '';
 
     const getScore = () => {
         return score;
     }
 
-    return {name, getScore};
+    const setChoice = (option) => {
+        choice = option;
+    }
+
+    const getChoice = () => {
+        return choice;
+    }
+
+    return {name, getScore, setChoice, getChoice};
 }
 
 const jeff = Player('Jeff');
@@ -35,4 +54,13 @@ const game = (gameBoard, player) => {
     gameBoard.makeBoard();
 }
 
+const options = document.getElementsByClassName('opt');
+
+for(let button of options){
+    button.addEventListener('click', () => {
+        gameBoard.makeBoard('');
+        jeff.setChoice(button.textContent);
+        gameBoard.makeBoard(jeff.getChoice());
+    })
+}
 game(gameBoard, jeff);
