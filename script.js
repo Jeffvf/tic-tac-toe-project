@@ -2,24 +2,37 @@ const gameBoard = (() => {
     const board = document.getElementById('game-board');
     const boardValues = new Array(9);
 
-    const makeBoard = (currentSign) => {
+    const makeBoard = (currentPlayer, nextPlayer) => {
         board.innerHTML = '';
         for(let i=0; i<9; i++){
             const div = document.createElement('div');
             div.classList.add('board-square');
             div.textContent = boardValues[i];
-            div.addEventListener('click', () => insertValue(currentSign, i))
+            div.addEventListener('click', () => insertValue(currentPlayer, nextPlayer, i));
             board.appendChild(div);
         }
     }
 
-    const insertValue = (value, index) => {
+    const insertValue = (currentPlayer, nextPlayer, index) => {
         const boardSquare = document.getElementsByClassName('board-square')[index];
         if(!boardSquare.innerHTML){
-            boardValues[index] = value;
-        }
+            boardValues[index] = currentPlayer.getSign();
 
-        makeBoard(value);
+            if (nextPlayer.isAI){
+                const pos = []
+                for(let i=0; i<9; i++){
+                    if(!boardValues[i]){
+                        pos.push(i);
+                    }
+                }
+                const index = Math.floor(Math.random() * pos.length);
+                boardValues[pos[index]] = nextPlayer.getSign();
+                makeBoard(currentPlayer, nextPlayer);
+            }
+            else{
+                makeBoard(nextPlayer, currentPlayer);
+            }
+        }
     }
 
     const resetBoard = () => {
@@ -32,7 +45,7 @@ const gameBoard = (() => {
     return {makeBoard, insertValue, resetBoard};
 })();
 
-const Player = (name) => {
+const Player = (name, isAI) => {
     let score = 0, sign = '';
 
     const getScore = () => {
@@ -47,7 +60,7 @@ const Player = (name) => {
         return sign;
     }
 
-    return {name, getScore, setSign, getSign};
+    return {name, isAI, getScore, setSign, getSign};
 }
 
 const game = (() => {
@@ -55,9 +68,9 @@ const game = (() => {
 
     let player1, player2;
 
-    const createPlayers = (p1Name, p2Name) => {
-        player1 = Player(p1Name);
-        player2 = Player(p2Name);
+    const createPlayers = (p1Name, p1isAI, p2Name, p2isAI) => {
+        player1 = Player(p1Name, p1isAI);
+        player2 = Player(p2Name, p2isAI);
     }
 
     const refreshScore = () => {
@@ -68,20 +81,13 @@ const game = (() => {
     const chooseSign = (p1Sign, p2Sign) => {
         player1.setSign(p1Sign);
         player2.setSign(p2Sign);
-
-        console.log(player1.getSign(), player2.getSign())
-
-        return true;
     }
-    
     const play = () => {
-        createPlayers('Jeff', 'Computer');
-        
         refreshScore();
-        gameBoard.makeBoard(player1.getSign());
+        gameBoard.makeBoard(player1, player2);
     }
 
-    return {play, chooseSign};
+    return {play, chooseSign, createPlayers};
 })();
 
 const options = document.getElementsByClassName('opt');
@@ -90,8 +96,8 @@ for(let button of options){
     button.addEventListener('click', () => {
         gameBoard.resetBoard();
         const sign = button.textContent;
+        game.createPlayers('Jeff', false, 'Computer', true);
         game.chooseSign(sign, sign == 'X' ? 'O':'X');
+        game.play();
     });
 }
-
-game.play();
