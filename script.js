@@ -33,41 +33,65 @@ const gameBoard = (() => {
 })();
 
 const Player = (name) => {
-    let score = 0, choice = '';
+    let score = 0, sign = '';
 
     const getScore = () => {
         return score;
     }
 
-    const setChoice = (option) => {
-        choice = option;
+    const setSign = (option) => {
+        sign = option;
     }
 
-    const getChoice = () => {
-        return choice;
+    const getSign = () => {
+        return sign;
     }
 
-    return {name, getScore, setChoice, getChoice};
+    return {name, getScore, setSign, getSign};
 }
 
-const jeff = Player('Jeff');
-
-const game = (gameBoard, player) => {
+const game = (() => {
     const body = document.getElementById('main-body');
-    let computerScore = 0;
 
-    body.childNodes[1].innerHTML = `<h1>${player.name} Score: <p>${player.getScore()}</p></h1>`;
-    body.childNodes[5].innerHTML = `<h1>Computer Score: <p>${computerScore}</p></h1>`;
-    gameBoard.makeBoard();
-}
+    let player1, player2;
+
+    const createPlayers = (p1Name, p2Name) => {
+        player1 = Player(p1Name);
+        player2 = Player(p2Name);
+    }
+
+    const refreshScore = () => {
+        body.children[0].innerHTML = `<h1>${player1.name} Score: <p>${player1.getScore()}</p></h1>`;
+        body.children[2].innerHTML = `<h1>${player2.name} Score: <p>${player2.getScore()}</p></h1>`;
+    }
+    
+    const chooseSign = (p1Sign, p2Sign) => {
+        player1.setSign(p1Sign);
+        player2.setSign(p2Sign);
+
+        console.log(player1.getSign(), player2.getSign())
+
+        return true;
+    }
+    
+    const play = () => {
+        createPlayers('Jeff', 'Computer');
+        
+        refreshScore();
+        gameBoard.makeBoard(player1.getSign());
+    }
+
+    return {play, chooseSign};
+})();
 
 const options = document.getElementsByClassName('opt');
 
 for(let button of options){
     button.addEventListener('click', () => {
         gameBoard.resetBoard();
-        jeff.setChoice(button.textContent);
-        gameBoard.makeBoard(jeff.getChoice());
-    })
+        const sign = button.textContent;
+        game.chooseSign(sign, sign == 'X' ? 'O':'X');
+    });
 }
-game(gameBoard, jeff);
+
+game.play();
