@@ -1,16 +1,18 @@
 const gameBoard = (() => {
     const board = document.getElementById('game-board');
-    const boardValues = new Array(9);
+    const boardValues = Array(3).fill().map(() => Array(3).fill());
     let countFilledFields = 0;
 
     const makeBoard = (currentPlayer, nextPlayer) => {
         board.innerHTML = '';
-        for(let i=0; i<9; i++){
-            const div = document.createElement('div');
-            div.classList.add('board-square');
-            div.textContent = boardValues[i];
-            div.addEventListener('click', () => insertValue(currentPlayer, nextPlayer, i));
-            board.appendChild(div);
+        for(let i=0; i<3; i++){
+            for(let j=0; j<3; j++){
+                const div = document.createElement('div');
+                div.classList.add('board-square');
+                div.textContent = boardValues[i][j];
+                div.addEventListener('click', () => insertValue(currentPlayer, nextPlayer, i, j));
+                board.appendChild(div);
+            }
         }
     }
 
@@ -28,25 +30,29 @@ const gameBoard = (() => {
         
     }
     
-    const insertValue = (currentPlayer, nextPlayer, index) => {
-        const boardSquare = document.getElementsByClassName('board-square')[index];
+    const insertValue = (currentPlayer, nextPlayer, row, column) => {
+        const boardSquare = document.getElementsByClassName('board-square')[(row * 3) + column];
+        console.log(row*3+column*row)
         if(!boardSquare.innerHTML){
             countFilledFields++;
-            boardValues[index] = currentPlayer.getSign();
+            boardValues[row][column] = currentPlayer.getSign();
             
             if (nextPlayer.isAI){
                 const pos = []
-                for(let i=0; i<9; i++){
-                    if(!boardValues[i]){
-                        pos.push(i);
+                for(let i=0; i<3; i++){
+                    for(let j=0; j<3; j++){
+                        if(!boardValues[i][j]){
+                            pos.push([i,j]);
+                        }
                     }
                 }
                 
                 if(countFilledFields < 9){
+                    console.log(pos);
                     const index = Math.floor(Math.random() * pos.length);
-                    boardValues[pos[index]] = nextPlayer.getSign();
+                    boardValues[pos[index][0]][pos[index][1]] = nextPlayer.getSign();
                     countFilledFields++;
-                    evaluateBoard(nextPlayer);
+                    // evaluateBoard(nextPlayer);
                 }
                 
                 makeBoard(currentPlayer, nextPlayer);
@@ -55,13 +61,15 @@ const gameBoard = (() => {
                 makeBoard(nextPlayer, currentPlayer);
             }
 
-            evaluateBoard(currentPlayer);
+            // evaluateBoard(currentPlayer);
         }
     }
     
     const resetBoard = () => {
-        for(i=0; i<9; i++){
-            boardValues[i] = '';
+        for(i=0; i<3; i++){
+            for(j=0; j<3; j++){
+                boardValues[i][j] = '';
+            }
         }
         makeBoard();
     }
