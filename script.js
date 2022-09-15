@@ -1,6 +1,7 @@
 const gameBoard = (() => {
     const board = document.getElementById('game-board');
     const boardValues = new Array(9);
+    let countFilledFields = 0;
 
     const makeBoard = (currentPlayer, nextPlayer) => {
         board.innerHTML = '';
@@ -13,11 +14,26 @@ const gameBoard = (() => {
         }
     }
 
+    const announceWinner = (currentPlayer) => {
+        alert(currentPlayer.name + ' wins!');
+        resetBoard();
+    }
+    
+    const evaluateBoard = (currentPlayer) => {
+        if(countFilledFields < 5){
+            return;
+        }
+        
+        const sign = currentPlayer.getSign();
+        
+    }
+    
     const insertValue = (currentPlayer, nextPlayer, index) => {
         const boardSquare = document.getElementsByClassName('board-square')[index];
         if(!boardSquare.innerHTML){
+            countFilledFields++;
             boardValues[index] = currentPlayer.getSign();
-
+            
             if (nextPlayer.isAI){
                 const pos = []
                 for(let i=0; i<9; i++){
@@ -25,23 +41,31 @@ const gameBoard = (() => {
                         pos.push(i);
                     }
                 }
-                const index = Math.floor(Math.random() * pos.length);
-                boardValues[pos[index]] = nextPlayer.getSign();
+                
+                if(countFilledFields < 9){
+                    const index = Math.floor(Math.random() * pos.length);
+                    boardValues[pos[index]] = nextPlayer.getSign();
+                    countFilledFields++;
+                    evaluateBoard(nextPlayer);
+                }
+                
                 makeBoard(currentPlayer, nextPlayer);
             }
             else{
                 makeBoard(nextPlayer, currentPlayer);
             }
+
+            evaluateBoard(currentPlayer);
         }
     }
-
+    
     const resetBoard = () => {
         for(i=0; i<9; i++){
             boardValues[i] = '';
         }
         makeBoard();
     }
-
+    
     return {makeBoard, insertValue, resetBoard};
 })();
 
