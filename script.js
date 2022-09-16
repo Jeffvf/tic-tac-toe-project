@@ -27,15 +27,52 @@ const gameBoard = (() => {
         }
         
         const sign = currentPlayer.getSign();
-        
+
+        console.log(boardValues.length);
+        for(let row=0; row<3; row++){
+            for(let column=0; column<3; column++){
+                if(boardValues[row][column] != sign){
+                    continue;
+                }
+                if(row == 0 && column == 0){
+                    if(boardValues[row][column] == boardValues[row+1][column+1] && boardValues[row+1][column+1] == boardValues[row+2][column+2]){
+                        announceWinner(currentPlayer);
+                        return;
+                    }
+                }
+                else if(row == 0 && column == 2){
+                    if(boardValues[row][column] == boardValues[row+1][column-1] && boardValues[row+1][column-1] == boardValues[row+2][column-2]){
+                        announceWinner(currentPlayer);
+                        return;
+                    }
+                }
+                if(row == 0){
+                    if(boardValues[row][column] == boardValues[row+1][column] && boardValues[row+1][column] == boardValues[row+2][column]){
+                        announceWinner(currentPlayer);
+                        return;
+                    }
+                }
+                if(column == 0){
+                    if(boardValues[row][column] == boardValues[row][column+1] && boardValues[row][column+1] == boardValues[row][column+2]){
+                        announceWinner(currentPlayer);
+                        return;
+                    }
+                }
+            }
+        }
+
+        if(countFilledFields == 9){
+            alert('Draw!');
+            resetBoard();
+        }
     }
     
     const insertValue = (currentPlayer, nextPlayer, row, column) => {
         const boardSquare = document.getElementsByClassName('board-square')[(row * 3) + column];
-        console.log(row*3+column*row)
         if(!boardSquare.innerHTML){
             countFilledFields++;
             boardValues[row][column] = currentPlayer.getSign();
+            evaluateBoard(currentPlayer);
             
             if (nextPlayer.isAI){
                 const pos = []
@@ -48,11 +85,10 @@ const gameBoard = (() => {
                 }
                 
                 if(countFilledFields < 9){
-                    console.log(pos);
                     const index = Math.floor(Math.random() * pos.length);
                     boardValues[pos[index][0]][pos[index][1]] = nextPlayer.getSign();
                     countFilledFields++;
-                    // evaluateBoard(nextPlayer);
+                    evaluateBoard(nextPlayer);
                 }
                 
                 makeBoard(currentPlayer, nextPlayer);
@@ -61,7 +97,6 @@ const gameBoard = (() => {
                 makeBoard(nextPlayer, currentPlayer);
             }
 
-            // evaluateBoard(currentPlayer);
         }
     }
     
