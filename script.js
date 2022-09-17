@@ -113,11 +113,7 @@ const gameBoard = (() => {
 })();
 
 const Player = (name, isAI) => {
-    let score = 0, sign = '';
-
-    const getScore = () => {
-        return score;
-    }
+    let sign = '';
 
     const setSign = (option) => {
         sign = option;
@@ -127,7 +123,7 @@ const Player = (name, isAI) => {
         return sign;
     }
 
-    return {name, isAI, getScore, setSign, getSign};
+    return {name, isAI, setSign, getSign};
 }
 
 const game = (() => {
@@ -140,9 +136,9 @@ const game = (() => {
         player2 = Player(p2Name, p2isAI);
     }
 
-    const refreshScore = () => {
-        body.children[0].innerHTML = `<h1>${player1.name} Score: <p>${player1.getScore()}</p></h1>`;
-        body.children[2].innerHTML = `<h1>${player2.name} Score: <p>${player2.getScore()}</p></h1>`;
+    const showPlayers = () => {
+        body.children[0].innerHTML = `<h1>${player1.name}`;
+        body.children[2].innerHTML = `<h1>${player2.name}`;
     }
     
     const chooseSign = (p1Sign, p2Sign) => {
@@ -150,7 +146,7 @@ const game = (() => {
         player2.setSign(p2Sign);
     }
     const play = () => {
-        refreshScore();
+        showPlayers();
         gameBoard.makeBoard(player1, player2);
     }
 
