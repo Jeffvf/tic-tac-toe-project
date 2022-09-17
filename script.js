@@ -16,12 +16,12 @@ const gameBoard = (() => {
         }
     }
 
-    const announceWinner = (currentPlayer) => {
+    const announceWinner = (currentPlayer, nextPlayer) => {
         alert(currentPlayer.name + ' wins!');
-        resetBoard();
+        resetBoard(nextPlayer, currentPlayer);
     }
     
-    const evaluateBoard = (currentPlayer) => {
+    const evaluateBoard = (currentPlayer, nextPlayer) => {
         if(countFilledFields < 5){
             return;
         }
@@ -63,7 +63,7 @@ const gameBoard = (() => {
 
         if(countFilledFields == 9){
             alert('Draw!');
-            resetBoard();
+            resetBoard(nextPlayer, currentPlayer);
         }
     }
     
@@ -72,7 +72,7 @@ const gameBoard = (() => {
         if(!boardSquare.innerHTML){
             countFilledFields++;
             boardValues[row][column] = currentPlayer.getSign();
-            evaluateBoard(currentPlayer);
+            evaluateBoard(currentPlayer, nextPlayer);
             
             if (nextPlayer.isAI){
                 const pos = []
@@ -88,7 +88,7 @@ const gameBoard = (() => {
                     const index = Math.floor(Math.random() * pos.length);
                     boardValues[pos[index][0]][pos[index][1]] = nextPlayer.getSign();
                     countFilledFields++;
-                    evaluateBoard(nextPlayer);
+                    evaluateBoard(nextPlayer, currentPlayer);
                 }
                 
                 makeBoard(currentPlayer, nextPlayer);
@@ -100,13 +100,14 @@ const gameBoard = (() => {
         }
     }
     
-    const resetBoard = () => {
+    const resetBoard = (nextPlayer, currentPlayer) => {
         for(i=0; i<3; i++){
             for(j=0; j<3; j++){
                 boardValues[i][j] = '';
             }
         }
-        makeBoard();
+        countFilledFields = 0;
+        makeBoard(nextPlayer, currentPlayer);
     }
     
     return {makeBoard, insertValue, resetBoard};
