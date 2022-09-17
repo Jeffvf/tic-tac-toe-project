@@ -168,3 +168,5 @@ for(let button of options){
         game.play();
     });
 }
+
+gameBoard.makeBoard();
