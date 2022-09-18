@@ -92,7 +92,10 @@ button:active {
 
 form{
     display:grid;
-    gap: 20px;
+}
+
+form:nth-child(odd){
+    gap: 50px;
 }
 
 form > button{
