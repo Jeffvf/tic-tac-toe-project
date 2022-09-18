@@ -132,22 +132,25 @@ const game = (() => {
 
     let player1, player2;
 
-    const createPlayers = (p1Name, p1isAI, p2Name, p2isAI) => {
-        player1 = Player(p1Name, p1isAI);
-        player2 = Player(p2Name, p2isAI);
-    }
-
     const showPlayers = () => {
         body.children[0].innerHTML = `<h1>${player1.name}`;
         body.children[2].innerHTML = `<h1>${player2.name}`;
     }
+
+    const createPlayers = (p1Name, p1isAI, p2Name, p2isAI) => {
+        player1 = Player(p1Name, p1isAI);
+        player2 = Player(p2Name, p2isAI);
+
+        console.log(player1, player2)
+        showPlayers();
+    }
+
     
     const chooseSign = (p1Sign, p2Sign) => {
         player1.setSign(p1Sign);
         player2.setSign(p2Sign);
     }
     const play = () => {
-        showPlayers();
         gameBoard.makeBoard(player1, player2);
     }
 
@@ -156,14 +159,72 @@ const game = (() => {
 
 const options = document.getElementsByClassName('opt');
 
+
 for(let button of options){
     button.addEventListener('click', () => {
         gameBoard.resetBoard();
         const sign = button.textContent;
-        game.createPlayers('Jeff', false, 'Computer', true);
         game.chooseSign(sign, sign == 'X' ? 'O':'X');
         game.play();
     });
 }
 
+const modal = (() => {
+    const myModal = document.getElementById("myModal");
+    const close = document.getElementsByClassName('close')[0];
+    const select = document.getElementById('option');
+    const confirm = document.getElementById('confirm-players');
+
+    const closeModal = () => {
+        close.addEventListener('click', () => {
+            myModal.style.display = "none";
+        });
+        
+        window.onclick = function(event) {
+            if (event.target == myModal) {
+                myModal.style.display = "none";
+            }
+        }
+
+        confirm.addEventListener('click', () => {
+            const player1Name = document.getElementById('player1').value;
+            let player2Name;
+
+            if(player2.disabled){
+                player2Name = 'Computer';
+            }
+            else{
+                player2Name = player2.value;
+            }
+
+            const isAI = player2.disabled;
+            game.createPlayers(player1Name, false, player2Name, isAI);
+            myModal.style.display = "none";
+        })
+    }
+    
+    const addAnotherPlayer = () => {
+        player2 = document.getElementById('player2');
+
+        select.addEventListener('change', () => {
+            if(select.value == 'no'){
+                player2.disabled = false;
+            }
+            else{
+                player2.disabled = true;
+            }
+        });
+    }
+
+    const displayModal = () => {
+        myModal.style.display = "block";
+        addAnotherPlayer();
+        closeModal();
+    }
+
+
+    return {displayModal};
+})();
+
+modal.displayModal();
 gameBoard.makeBoard();

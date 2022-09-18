@@ -27,6 +27,28 @@
             <h1>Player 2</h1>
         </div>
     </div>
+
+    <div id="myModal" class="modal">
+
+        <!-- Modal content -->
+        <div class="modal-content">
+          <span class="close">&times;</span>
+          <forms>
+            <label for="player1">Player 1 name:</label><br>
+            <input type="text" id="player1"><br>
+            <label for="option">Do you wish to play against the computer?</label><br>
+            <select id="option">
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+            </select><br>
+            <label for="player2">Player 2 name:</label><br>
+            <input type="text" id="player2" disabled><br>
+
+            <button type="submit" id="confirm-players">OK</button>
+          </forms>
+        </div>
+      
+    </div>
     <script src="script.js"></script>
 </body>
 </html>
